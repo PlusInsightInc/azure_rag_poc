@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from rag_engine import load_documents, setup_vectorstore, get_rag_chain
+from azure_rag_poc.rag_engine import load_documents, setup_vectorstore, get_rag_chain
 
 st.set_page_config(page_title="Azure RAG Demo", page_icon="🤖")
 

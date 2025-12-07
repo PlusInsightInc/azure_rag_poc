@@ -10,11 +10,11 @@ load_dotenv()
 
 def load_documents(data_dir="data"):
     """Loads documents from the specified directory."""
-    loader = DirectoryLoader(data_dir, glob="**/*.txt", loader_cls=TextLoader)
+    loader = DirectoryLoader(data_dir, glob="**/*.md", loader_cls=TextLoader)
     documents = loader.load()
     return documents
 
-def setup_vectorstore(documents=None, index_name="rag-poc-index"):
+def setup_vectorstore(documents=None, index_name="rag-poc-index-v2"):
     """Sets up the Azure AI Search vector store."""
     embeddings = AzureOpenAIEmbeddings(
         azure_deployment=os.getenv("AZURE_OPENAI_EMBEDDINGS_MODEL_NAME"),
@@ -34,7 +34,10 @@ def setup_vectorstore(documents=None, index_name="rag-poc-index"):
     )
 
     if documents:
-        vector_store.add_documents(documents=documents)
+        from langchain.text_splitter import RecursiveCharacterTextSplitter
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        docs = text_splitter.split_documents(documents)
+        vector_store.add_documents(documents=docs)
     
     return vector_store
 
